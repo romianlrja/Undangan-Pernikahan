@@ -339,11 +339,19 @@ async function createStore() {
   const form = $('#wishForm');
   const fName = $('#fName'), fAtt = $('#fAtt'), fGuests = $('#fGuests'), fMsg = $('#fMsg');
   const listEl = $('#wishList'), pager = $('#pager'), sendBtn = $('#sendBtn');
+  const maxMessageWords = Number(fMsg.dataset.maxWords);
+  const countWords = text => text.trim() ? text.trim().split(/\s+/).length : 0;
   let all = [], page = 1, freshKey = null, store = null;
 
   /* counter & validasi */
   fName.addEventListener('input', () => { $('#cName').textContent = fName.value.length; fName.classList.remove('invalid'); $('#eName').textContent = ''; });
-  fMsg.addEventListener('input',  () => { $('#cMsg').textContent = fMsg.value.length;  fMsg.classList.remove('invalid');  $('#eMsg').textContent = ''; });
+  fMsg.addEventListener('input', () => {
+    const words = fMsg.value.match(/\S+/g) || [];
+    if (words.length > maxMessageWords) fMsg.value = words.slice(0, maxMessageWords).join(' ');
+    $('#cMsg').textContent = countWords(fMsg.value);
+    fMsg.classList.remove('invalid');
+    $('#eMsg').textContent = '';
+  });
   fAtt.addEventListener('change', () => {
     const no = fAtt.value === 'Tidak Hadir';
     $('#guestsWrap').classList.toggle('off', no);
@@ -358,7 +366,7 @@ async function createStore() {
     let ok = true;
     const n = fName.value.trim(), m = fMsg.value.trim();
     if (n.length < 3 || n.length > 20) { fName.classList.add('invalid'); $('#eName').textContent = 'Nama harus 3-20 karakter'; ok = false; }
-    if (m.length < 5 || m.length > 600) { fMsg.classList.add('invalid'); $('#eMsg').textContent = 'Pesan harus 5-600 karakter'; ok = false; }
+    if (m.length < 5 || countWords(m) > maxMessageWords) { fMsg.classList.add('invalid'); $('#eMsg').textContent = `Pesan harus minimal 5 karakter dan maksimal ${maxMessageWords} kata`; ok = false; }
     return ok;
   }
 
