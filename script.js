@@ -16,12 +16,13 @@ const CONFIG = {
   // Isi dari Firebase Console > Project settings > Your apps (Web).
   // Kalau apiKey & projectId masih kosong, ucapan disimpan di browser saja (mode demo).
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: ''
+    apiKey: 'AIzaSyAXLhko93WBtM_r3nioknf8A9B9eKb-jFU',
+    authDomain: 'nikahanabang-3df2c.firebaseapp.com',
+    projectId: 'nikahanabang-3df2c',
+    storageBucket: 'nikahanabang-3df2c.firebasestorage.app',
+    messagingSenderId: '1001169968265',
+    appId: '1:1001169968265:web:6fbf386da920e44a817a58',
+    measurementId: 'G-261KBG9HD0'
   },
   firebaseVersion: '10.12.2',
   collection: 'wishes'
@@ -298,7 +299,12 @@ async function createStore() {
         import(base + 'firebase-app.js'),
         import(base + 'firebase-firestore.js')
       ]);
-      const db = fs.getFirestore(app.initializeApp(c));
+      const firebaseApp = app.initializeApp(c);
+      // Analytics opsional: jangan sampai kegagalan Analytics mematikan Firestore.
+      import(base + 'firebase-analytics.js').then(async analytics => {
+        if (await analytics.isSupported()) analytics.getAnalytics(firebaseApp);
+      }).catch(err => console.warn('Firebase Analytics tidak tersedia', err));
+      const db = fs.getFirestore(firebaseApp);
       const col = fs.collection(db, CONFIG.collection);
       return {
         mode: 'firebase',
