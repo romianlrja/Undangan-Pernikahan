@@ -358,7 +358,7 @@ async function createStore() {
     let ok = true;
     const n = fName.value.trim(), m = fMsg.value.trim();
     if (n.length < 3 || n.length > 20) { fName.classList.add('invalid'); $('#eName').textContent = 'Nama harus 3-20 karakter'; ok = false; }
-    if (m.length < 5 || m.length > 200) { fMsg.classList.add('invalid'); $('#eMsg').textContent = 'Pesan harus 5-200 karakter'; ok = false; }
+    if (m.length < 5 || m.length > 600) { fMsg.classList.add('invalid'); $('#eMsg').textContent = 'Pesan harus 5-600 karakter'; ok = false; }
     return ok;
   }
 
